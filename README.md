@@ -53,6 +53,12 @@ df = get_fundamentals(query(
 
 ```
 
+## 进阶函数
+
+1. 由于`code`是字符串，动态传入`list/dict`太麻烦，所以还提供了`auto_execute`
+2. 用户提前对函数套上`auto_execute`装饰器，就可以快速使用
+3. 参考[examples/jqresearch.py](examples/jqresearch.py)
+
 ## 自动登录并获取数据的完整示例
 
 参考[examples/playwright/joinquant.py](examples/playwright/joinquant.py)

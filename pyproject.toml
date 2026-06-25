@@ -1,7 +1,7 @@
 [project]
 name = "jupyter-data-fetch"
 version = "0.1.0"
-description = "Add your description here"
+description = "fetch data from jupyter notebook"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
