@@ -29,11 +29,15 @@
 
 ## 核心代码
 
-1. `PickleB85Codec`: `base85`编解码器，使用字符串传输数据，压缩率高，但部分平台会截断长字符串
-2. `PickleImageCodec`: 图片编解码器，使用图片传输数据，`base64`编码压缩率低
+1. `JupyterBase85Codec`: `base85`编解码器，使用字符串传输数据，压缩率高，但部分平台会截断长字符串
+2. `JupyterImageCodec`: 图片编解码器，使用图片传输数据，`base64`编码压缩率低
 3. `generate_code`生成可在`Notebook`单元格中运行的代码字符串
 4. `kernel.execute`在服务段执行字符串代码，返回`json`对象
 5. `extract_decode`从`json`中提取数据后解码成对象
+
+## 自动登录并获取数据的完整示例
+
+参考[examples/playwright/joinquant.py](examples/playwright/joinquant.py)
 
 ## 注意
 

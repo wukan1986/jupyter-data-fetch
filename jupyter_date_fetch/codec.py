@@ -24,7 +24,7 @@ except OSError:
 """
 
 
-class PickleB85Codec:
+class JupyterBase85Codec:
     """
     ## 编码
     1. 数据先pickle序列化
@@ -63,11 +63,11 @@ print(serialized, end='')
 
     @staticmethod
     def extract_decode(reply):
-        b64_string = PickleB85Codec.extract_from_reply(reply)
-        return PickleB85Codec.decode(b64_string) if b64_string else None
+        b64_string = JupyterBase85Codec.extract_from_reply(reply)
+        return JupyterBase85Codec.decode(b64_string) if b64_string else None
 
 
-class PickleImageCodec:
+class JupyterImageCodec:
     """
     ## 编码
     1. 数据先pickle序列化
@@ -119,5 +119,5 @@ img
 
     @staticmethod
     def extract_decode(reply):
-        b64_string = PickleImageCodec.extract_from_reply(reply)
-        return PickleImageCodec.decode(b64_string) if b64_string else None
+        b64_string = JupyterImageCodec.extract_from_reply(reply)
+        return JupyterImageCodec.decode(b64_string) if b64_string else None
