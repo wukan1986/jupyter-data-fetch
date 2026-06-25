@@ -27,17 +27,43 @@
    ![ide.png](docs/ide.png)
 5. 留意:`server_url`只复制一段。`Cookie`要完整复制
 
-## 核心代码
+## 最简示例
 
-1. `JupyterBase85Codec`: `base85`编解码器，使用字符串传输数据，压缩率高，但部分平台会截断长字符串
-2. `JupyterImageCodec`: 图片编解码器，使用图片传输数据，`base64`编码压缩率低
-3. `generate_code`生成可在`Notebook`单元格中运行的代码字符串
-4. `kernel.execute`在服务段执行字符串代码，返回`json`对象
-5. `extract_decode`从`json`中提取数据后解码成对象
+```python
+from jupyter_kernel_client import KernelClient
+
+from jupyter_date_fetch.codec import JupyterBase85Codec
+
+# ... 省去部分代码。更多参考examples/joinquant.py
+
+with KernelClient(server_url="https://www.joinquant.com/user/12345678901", token=None, headers=headers) as kernel:
+    # 一定要保证缩进正确
+    code = """
+df = get_fundamentals(query(
+        valuation, income
+    ).filter(
+        # 这里不能使用 in 操作, 要使用in_()函数
+        valuation.code.in_(['000001.XSHE', '600000.XSHG'])
+    ), date='2015-10-15')
+"""
+    reply = kernel.execute(JupyterBase85Codec.generate_code(code, var_name='df'))
+    # print(reply)
+    obj = JupyterBase85Codec.extract_decode(reply)
+    print(obj)
+
+```
 
 ## 自动登录并获取数据的完整示例
 
 参考[examples/playwright/joinquant.py](examples/playwright/joinquant.py)
+
+## 核心代码
+
+1. `JupyterBase85Codec`: `base85`编解码器，使用字符串传输数据，压缩率高，但部分平台会截断长字符串
+2. `JupyterImageCodec`: 图片编解码器，使用图片传输数据，`base64`编码压缩率低
+3. `generate_code`生成可在`Notebook`单元格中运行的代码字符串，一定要指定需要获取的变量名`var_name`
+4. `kernel.execute`在服务段执行字符串代码，返回`json`对象
+5. `extract_decode`从`json`中提取数据后解码成对象
 
 ## 注意
 
