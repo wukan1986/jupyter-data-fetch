@@ -32,7 +32,7 @@
 ```python
 from jupyter_kernel_client import KernelClient
 
-from jupyter_date_fetch.codec import JupyterBase85Codec
+from jupyter_date_fetch.codec import JupyterTextCodec
 
 # ... 省去部分代码。更多参考examples/joinquant.py
 
@@ -46,9 +46,9 @@ df = get_fundamentals(query(
         valuation.code.in_(['000001.XSHE', '600000.XSHG'])
     ), date='2015-10-15')
 """
-    reply = kernel.execute(JupyterBase85Codec.generate_code(code, var_name='df'))
+    reply = kernel.execute(JupyterTextCodec.generate_code(code, var_name='df'))
     # print(reply)
-    obj = JupyterBase85Codec.extract_decode(reply)
+    obj = JupyterTextCodec.extract_decode(reply)
     print(obj)
 
 ```
@@ -65,7 +65,7 @@ df = get_fundamentals(query(
 
 ## 核心代码
 
-1. `JupyterBase85Codec`: `base85`编解码器，使用字符串传输数据，压缩率高，但部分平台会截断长字符串
+1. `JupyterTextCodec`: 目前使用`base85`编解码器，使用字符串传输数据，压缩率高，但部分平台会截断长字符串
 2. `JupyterImageCodec`: 图片编解码器，使用图片传输数据，`base64`编码压缩率低
 3. `generate_code`生成可在`Notebook`单元格中运行的代码字符串，一定要指定需要获取的变量名`var_name`
 4. `kernel.execute`在服务段执行字符串代码，返回`json`对象

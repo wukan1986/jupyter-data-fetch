@@ -24,7 +24,7 @@ except OSError:
 """
 
 
-class JupyterBase85Codec:
+class JupyterTextCodec:
     """
     ## 编码
     1. 数据先pickle序列化
@@ -58,13 +58,13 @@ print(serialized, end='')
             return reply['outputs'][0]['text']
 
     @staticmethod
-    def decode(b85_string):
-        return pd.read_pickle(BytesIO(base64.b85decode(b85_string)), compression='gzip')
+    def decode(text):
+        return pd.read_pickle(BytesIO(base64.b85decode(text)), compression='gzip')
 
     @staticmethod
     def extract_decode(reply):
-        b85_string = JupyterBase85Codec.extract_from_reply(reply)
-        return JupyterBase85Codec.decode(b85_string)  # if b85_string else None
+        text = JupyterTextCodec.extract_from_reply(reply)
+        return JupyterTextCodec.decode(text)
 
 
 class JupyterImageCodec:
@@ -131,13 +131,13 @@ from functools import wraps
 
 
 class CodecType(Enum):
-    BASE85 = JupyterBase85Codec
+    TEXT = JupyterTextCodec
     IMAGE = JupyterImageCodec
 
 
 class LazyKernel:
     _kernel = None
-    _codec_type = CodecType.BASE85  # 默认使用 Base85
+    _codec_type = CodecType.TEXT
 
     @classmethod
     def set_kernel(cls, kernel_obj):
@@ -157,7 +157,7 @@ class LazyKernel:
     def get_codec(cls):
         if cls._codec_type == CodecType.IMAGE:
             return JupyterImageCodec
-        return JupyterBase85Codec
+        return JupyterTextCodec
 
 
 def auto_execute(func):
@@ -177,6 +177,7 @@ def auto_execute(func):
         code = f"""
 # 在外部调用时，必须单独成一行
 # 部分函数拼接后有缺失时，需退回到原始写法
+
 _ = {call_line}
 """
         reply = kernel.execute(codec.generate_code(code, var_name='_'))

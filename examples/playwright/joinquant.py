@@ -4,7 +4,7 @@ from pprint import pprint
 
 from jupyter_kernel_client import KernelClient
 
-from jupyter_date_fetch.codec import JupyterBase85Codec
+from jupyter_date_fetch.codec import JupyterTextCodec
 from playwright_helper import AsyncBrowser, get_chrome_path, kill_browsers  # noqa
 
 USERNAME = "13912345678"
@@ -75,9 +75,9 @@ df = get_fundamentals(query(
     ), date='2015-10-15')
 """
 
-        reply = kernel.execute(JupyterBase85Codec.generate_code(code, var_name='df'))
+        reply = kernel.execute(JupyterTextCodec.generate_code(code, var_name='df'))
         # print(reply)
-        obj = JupyterBase85Codec.extract_decode(reply)
+        obj = JupyterTextCodec.extract_decode(reply)
         print(obj)
 
 
