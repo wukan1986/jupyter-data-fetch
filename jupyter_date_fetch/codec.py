@@ -1,14 +1,13 @@
 import base64
 from io import BytesIO
+from types import SimpleNamespace
 
 import pandas as pd
 
 BASE_CODE = """
 # 不建议用python3.6
 
-import base64
 from io import BytesIO
-import gzip
 import pandas as pd
 
 try:
@@ -17,11 +16,34 @@ try:
     buf.seek(0)
     compressed = buf.read()
 except OSError:
+    import gzip
+
     buf = BytesIO()
     pd.to_pickle({0}, buf)
     buf.seek(0) # ValueError: I/O operation on closed file.
     compressed = gzip.compress(buf.getvalue())
 """
+
+TO_DICT_CODE = """
+# 客户端无法反序列化的类，转换成字典
+def object_to_dict(obj, exclude=None):
+
+    exclude = set(exclude or [])
+    return {
+        attr: getattr(obj, attr)
+        for attr in dir(obj)
+        if not attr.startswith('_') 
+        and attr not in exclude
+        and not callable(getattr(obj, attr))
+    }
+"""
+
+
+def dict_to_object(d, exclude=None):
+    """从字典恢复为命名空间对象"""
+    exclude = set(exclude or [])
+    filtered = {k: v for k, v in d.items() if k not in exclude}
+    return SimpleNamespace(**filtered)
 
 
 class JupyterTextCodec:
@@ -44,6 +66,8 @@ class JupyterTextCodec:
 {codes_str}
         
 {BASE_CODE.format(var_name)}
+
+import base64
 
 serialized = base64.b85encode(compressed).decode('ascii')
 print(serialized, end='')
@@ -164,6 +188,7 @@ def auto_execute(func):
     """
     1. 在Notebook中用`help(get_price)`得到函数签名，然后套装饰器
     2. 调用时必须单独一行
+    3. 建议只是临时使用，还是要使用完整版
     """
 
     @wraps(func)
@@ -180,6 +205,7 @@ def auto_execute(func):
 
 _ = {call_line}
 """
+        # print(code)
         reply = kernel.execute(codec.generate_code(code, var_name='_'))
         return codec.extract_decode(reply)
 
