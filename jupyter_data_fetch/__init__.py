@@ -1,0 +1,1 @@
+from jupyter_data_fetch._version import __version__

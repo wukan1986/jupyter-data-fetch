@@ -32,7 +32,7 @@
 ```python
 from jupyter_kernel_client import KernelClient
 
-from jupyter_date_fetch.codec import JupyterTextCodec
+from jupyter_data_fetch.codec import JupyterTextCodec
 
 # ... 省去部分代码。更多参考examples/joinquant.py
 
@@ -65,7 +65,7 @@ df = get_fundamentals(query(
 
 ## 核心代码
 
-1. `JupyterTextCodec`: 目前使用`base85`编解码器，使用字符串传输数据，压缩率高，但部分平台会截断长字符串
+1. `JupyterTextCodec`: 目前使用`base85`编解码器，使用字符串传输数据，压缩率高。字符串被截断时，必须使用`JupyterImageCodec`
 2. `JupyterImageCodec`: 图片编解码器，使用图片传输数据，`base64`编码压缩率低
 3. `generate_code`生成可在`Notebook`单元格中运行的代码字符串，一定要指定需要获取的变量名`var_name`
 4. `kernel.execute`在服务段执行字符串代码，返回`json`对象
@@ -76,3 +76,4 @@ df = get_fundamentals(query(
 1. 由于各平台限制，`generate_code`生成的代码可能无法运行，可以复制到`Notebook`中测试
 2. `python3.6`问题太多，可以打开一个`ipynb`文件后，通过菜单更改内核为最新版
 3. 可以连接到已经打开的内核，只要提供`kernel_id`参数即可。参考`ricequant.py`示例
+4. `Notebook`中可以导入当前目录中`py`，但本项目直接使用当前目录是`/`，导致导入失败，通过指定`kernel_id`可解决

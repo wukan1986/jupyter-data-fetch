@@ -1,3 +1,3 @@
 jupyter_kernel_client
 pandas<3.0
-pillow # PickleImageCodecc才需要
+pillow # JupyterImageCodecc才需要

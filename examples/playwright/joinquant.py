@@ -4,7 +4,7 @@ from pprint import pprint
 
 from jupyter_kernel_client import KernelClient
 
-from jupyter_date_fetch.codec import JupyterTextCodec
+from jupyter_data_fetch.codec import JupyterTextCodec
 from playwright_helper import AsyncBrowser, get_chrome_path, kill_browsers  # noqa
 
 USERNAME = "13912345678"

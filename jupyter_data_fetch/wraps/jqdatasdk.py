@@ -1,6 +1,6 @@
 # Notebook中可以通过help()或??获得函数签名
 
-from jupyter_date_fetch.codec import LazyKernel, TO_DICT_CODE, dict_to_object
+from jupyter_data_fetch.codec import LazyKernel, TO_DICT_CODE, dict_to_object
 
 
 def get_all_securities(types=[], date=None):
@@ -45,4 +45,18 @@ def get_index_weights(index_id, date=None):
     kernel = LazyKernel.get_kernel()
     codec = LazyKernel.get_codec()
     code = f"""_ = get_index_weights({repr(index_id)}, {repr(date)})"""
+    return codec.extract_decode(kernel.execute(codec.generate_code(code, var_name='_')))
+
+
+def get_extras(info, security_list, start_date=None, end_date='2015-12-31', df=True, count=None):
+    kernel = LazyKernel.get_kernel()
+    codec = LazyKernel.get_codec()
+    code = f"""_ = get_extras({repr(info)}, {repr(security_list)}, {repr(start_date)}, {repr(end_date)}, {repr(df)}, {repr(count)})"""
+    return codec.extract_decode(kernel.execute(codec.generate_code(code, var_name='_')))
+
+
+def get_industry(security, date=None):
+    kernel = LazyKernel.get_kernel()
+    codec = LazyKernel.get_codec()
+    code = f"""_ = get_industry({repr(security)}, {repr(date)})"""
     return codec.extract_decode(kernel.execute(codec.generate_code(code, var_name='_')))
