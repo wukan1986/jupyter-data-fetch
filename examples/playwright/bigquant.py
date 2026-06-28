@@ -4,6 +4,9 @@
 在单元格中执行 print('Hello World')，可以记录日志
 理论上是可以实现取数功能
 
+
+需要研究code-server的通讯协议，后端与jupyter是不同的
+
 """
 import asyncio
 
