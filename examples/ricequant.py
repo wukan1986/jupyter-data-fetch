@@ -18,12 +18,12 @@ with KernelClient(server_url="https://www.ricequant.com/research/user/user_12345
     code = """
 df = get_industry('621020', source='citics_2019', date=None, market='cn')
 """
-    reply = kernel.execute(JupyterTextCodec.generate_code(code))
+    reply = kernel.execute(JupyterTextCodec.generate_code(code), store_history=False)
     # print(reply)
     obj = JupyterTextCodec.extract_decode(reply)
     print(obj)
 
-    reply = kernel.execute(JupyterImageCodec.generate_code())
+    reply = kernel.execute(JupyterImageCodec.generate_code(), store_history=False)
     # print(reply)
     obj = JupyterImageCodec.extract_decode(reply)
     print(obj)

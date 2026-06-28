@@ -15,12 +15,12 @@ code = """
 import pandas as pd
 df = pd.DataFrame({'A':[1,2,3,4, 6]})
 """
-reply = kernel.execute(JupyterTextCodec.generate_code(code, var_name='df'))
+reply = kernel.execute(JupyterTextCodec.generate_code(code, var_name='df'), store_history=False)
 # print(reply)
 obj = JupyterTextCodec.extract_decode(reply)
 print(obj)
 
-reply = kernel.execute(JupyterImageCodec.generate_code(var_name='df'))
+reply = kernel.execute(JupyterImageCodec.generate_code(var_name='df'), store_history=False)
 # print(reply)
 obj = JupyterImageCodec.extract_decode(reply)
 print(obj)

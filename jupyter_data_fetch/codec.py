@@ -87,7 +87,6 @@ base64.b85encode(compressed).decode('ascii')
             error_msg = '\n'.join(reply['outputs'][0]['traceback'])
             raise RuntimeError(f"Jupyter execution error:\n{error_msg}")
         else:
-            # return reply['outputs'][0]['text']
             return reply['outputs'][0]['data']['text/plain']
 
     @staticmethod

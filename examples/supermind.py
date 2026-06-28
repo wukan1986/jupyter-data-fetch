@@ -13,12 +13,12 @@ with KernelClient(server_url="https://supermind.10jqka.com.cn/notebook/user/1234
     code = """
 df = query_iwencai("近10日的区间主力资金流向>5000万元，市值>1000亿，日成交额>30亿")
 """
-    reply = kernel.execute(JupyterTextCodec.generate_code(code, var_name='df'))
+    reply = kernel.execute(JupyterTextCodec.generate_code(code, var_name='df'), store_history=False)
     # print(reply)
     obj = JupyterTextCodec.extract_decode(reply)
     print(obj)
 
-    reply = kernel.execute(JupyterImageCodec.generate_code(var_name='df'))
+    reply = kernel.execute(JupyterImageCodec.generate_code(var_name='df'), store_history=False)
     # print(reply)
     obj = JupyterImageCodec.extract_decode(reply)
     print(obj)

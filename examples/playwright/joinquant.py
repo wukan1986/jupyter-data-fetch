@@ -75,7 +75,7 @@ df = get_fundamentals(query(
     ), date='2015-10-15')
 """
 
-        reply = kernel.execute(JupyterTextCodec.generate_code(code, var_name='df'))
+        reply = kernel.execute(JupyterTextCodec.generate_code(code, var_name='df'), store_history=False)
         # print(reply)
         obj = JupyterTextCodec.extract_decode(reply)
         print(obj)

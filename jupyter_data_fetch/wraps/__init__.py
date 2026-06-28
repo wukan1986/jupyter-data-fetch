@@ -28,7 +28,7 @@ def auto_execute(func):
 _ = {call_line}
 """
         # print(code)
-        reply = kernel.execute(codec.generate_code(code, var_name='_'))
+        reply = kernel.execute(codec.generate_code(code, var_name='_'), silent=False, store_history=False)
         return codec.extract_decode(reply)
 
     return wrapper
