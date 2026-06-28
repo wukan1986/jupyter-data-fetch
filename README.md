@@ -1,6 +1,6 @@
 # jupyter-data-fetch
 
-从`jupyterlab`、`jupyter notebook`中抓取数据的示例。**代码就一个文件，过于简单，故未打包发布**
+从`jupyterlab`、`jupyter notebook`中抓取数据的示例
 
 ## 优点
 
@@ -14,8 +14,7 @@
 
 ## 安装
 
-1. 将`codec.py`复制到自己的项目中
-2. `uv pip install -r requirements.txt`，其中关键的是`uv pip install jupyter_kernel_client`库
+1. `uv pip install jupyter-data-fetch -U`
 
 ## 使用方法
 
