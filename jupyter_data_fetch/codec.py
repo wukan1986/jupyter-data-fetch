@@ -48,7 +48,7 @@ def dict_to_object(d, exclude=None):
 
 def extract_from_reply(reply):
     """print和!,都是走本路径"""
-    if reply['status'] == 'error':
+    if reply.get('status') in (None, 'error'):
         error_msg = '\n'.join(reply['outputs'][0]['traceback'])
         raise RuntimeError(f"Jupyter execution error:\n{error_msg}")
     else:
@@ -83,7 +83,7 @@ base64.b85encode(compressed).decode('ascii')
 
     @staticmethod
     def extract_from_reply(reply):
-        if reply['status'] == 'error':
+        if reply.get('status') in (None, 'error'):
             error_msg = '\n'.join(reply['outputs'][0]['traceback'])
             raise RuntimeError(f"Jupyter execution error:\n{error_msg}")
         else:
@@ -136,7 +136,7 @@ img
 
     @staticmethod
     def extract_from_reply(reply):
-        if reply['status'] == 'error':
+        if reply.get('status') in (None, 'error'):
             error_msg = '\n'.join(reply['outputs'][0]['traceback'])
             raise RuntimeError(f"Jupyter execution error:\n{error_msg}")
         else:
