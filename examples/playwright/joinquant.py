@@ -12,7 +12,7 @@ USERNAME = "13912345678"
 PASSWORD = "123456"
 NOTEBOOK = "9527.ipynb"  # 这个可以不提供
 
-captured = {"url": None, "cookies": None}
+captured = {"url": None, "cookie": None}
 
 
 async def capture_cookies():
@@ -25,7 +25,7 @@ async def capture_cookies():
         async def on_request(request):
             if "api/kernelspecs" in request.url:
                 captured["url"] = request.url
-                captured["cookies"] = await page.context.cookies()
+                captured["cookie"] = await request.header_value("cookie")
                 print(captured)
 
         page.on("request", on_request)
@@ -40,6 +40,7 @@ async def capture_cookies():
             await page.get_by_label("阅读并接受聚宽用户协议及隐私政策").check()
             await page.get_by_role("button", name="登 录").click()
 
+        # 打开特定Notebook页，可屏蔽
         try:
             async with page.expect_popup(timeout=2000) as page1_info:
                 await page.frame_locator("iframe[name=\"research\"]").get_by_role("link", name=NOTEBOOK).click(timeout=2000)
@@ -49,7 +50,7 @@ async def capture_cookies():
 
 
 async def jupyter():
-    COOKIE = "; ".join([f"{c['name']}={c['value']}" for c in captured['cookies']])
+    COOKIE = captured['cookie']
     HEADERS = {'Cookie': COOKIE, 'X-XSRFToken': SimpleCookie(COOKIE)['_xsrf'].value}
     UID = re.search(r'user-(\d+)=', COOKIE).group(1)
     SERVER_URL = f"https://www.joinquant.com/user/{UID}"
