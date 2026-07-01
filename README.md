@@ -20,11 +20,11 @@
 
 1. `examples`下提供了示例
 2. 以`joinquant`为例，打开浏览器，登录研究环境，按`F12`打开开发者工具
-3. 搜索`kernels`，复制`请求URL`和`Cookie`
+3. 搜索`kernels`，复制`Cookie`
    ![devtool.png](docs/devtool.png)
-4. 替换示例中`Cookie`和`server_url`即可
+4. 替换示例中`COOKIE`即可
    ![ide.png](docs/ide.png)
-5. 留意:`server_url`只复制一段。`Cookie`要完整复制
+5. 会自动从`COOKIE`提取`用户ID`，并更新`SERVER_URL`
 
 ## 最简示例
 
