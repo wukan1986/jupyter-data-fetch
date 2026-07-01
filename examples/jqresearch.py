@@ -1,5 +1,7 @@
 # Notebook中可以通过help()获得函数签名
 # 为了演示，集中在一个文件。建议用户自己使用时独立到其他文件
+import re
+
 from jupyter_data_fetch.wraps import auto_execute
 
 
@@ -22,11 +24,12 @@ from http.cookies import SimpleCookie
 
 from jupyter_kernel_client import KernelClient
 
-Cookie = 'user-12345678901=2|1:0|10:1782612273|16:user-12345678901|48:NzA0ODFkNzItYWJkYi00Njg4LThkMDQtN2Y0M2NmODY0NGYw|52b0c3efe3112d34e67eb2728a1fd231aceb117a575d90177672553f67a847b6; uid=wKiXm2jC68o2sUDuZ0rwAg==; getStrategy=1; _xsrf=2|a0420526|3ad949c771bac9911b1012232f89763b|1782461011; token=2824ee78d21e17124b752edb6905c908b3892e78; PHPSESSID=io3t5iqtd22g6lbgfb47m6bb94'
+COOKIE = 'user-12345678901=2|1:0|10:1782905738|16:user-12345678901|48:ZTMxZTBmYTYtNjVkOC00ZmQ2LWI2YmItNmY4NmNhODRlOWQ0|0eaeaafc6b33e898d5905d879d9c85b5a0b256930c29b755b3f2ce15f7b1c5bb; uid=wKiXm2jC68o2sUDuZ0rwAg==; getStrategy=1; _xsrf=2|a0420526|3ad949c771bac9911b1012232f89763b|1782461011; token=2920d269ae8cbd6a1f3fdc0d725bf3bc4d3a2697; PHPSESSID=5r217s9lc1afeqe41u3m3milq1'
+HEADERS = {'Cookie': COOKIE, 'X-XSRFToken': SimpleCookie(COOKIE)['_xsrf'].value}
+UID = re.search(r'user-(\d+)=', COOKIE).group(1)
+SERVER_URL = f"https://www.joinquant.com/user/{UID}"
 
-headers = {'Cookie': Cookie, 'X-XSRFToken': SimpleCookie(Cookie)['_xsrf'].value}
-
-with KernelClient(server_url="https://www.joinquant.com/user/12345678901", token=None, headers=headers) as kernel:
+with KernelClient(server_url=SERVER_URL, token=None, headers=HEADERS) as kernel:
     from jupyter_data_fetch.codec import LazyKernel
 
     LazyKernel.set_kernel(kernel)

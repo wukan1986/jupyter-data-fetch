@@ -1,4 +1,5 @@
 import asyncio
+import re
 from http.cookies import SimpleCookie
 from pprint import pprint
 
@@ -9,7 +10,7 @@ from playwright_helper import AsyncBrowser, get_chrome_path, kill_browsers  # no
 
 USERNAME = "13912345678"
 PASSWORD = "123456"
-NOTEBOOK = "9527.ipynb"
+NOTEBOOK = "9527.ipynb"  # 这个可以不提供
 
 captured = {"url": None, "cookies": None}
 
@@ -48,17 +49,14 @@ async def capture_cookies():
 
 
 async def jupyter():
-    server_url = captured["url"].replace("/api/kernelspecs", "")
-    Cookie = "; ".join([f"{c['name']}={c['value']}" for c in captured['cookies']])
+    COOKIE = "; ".join([f"{c['name']}={c['value']}" for c in captured['cookies']])
+    HEADERS = {'Cookie': COOKIE, 'X-XSRFToken': SimpleCookie(COOKIE)['_xsrf'].value}
+    UID = re.search(r'user-(\d+)=', COOKIE).group(1)
+    SERVER_URL = f"https://www.joinquant.com/user/{UID}"
 
-    headers = {'Cookie': Cookie, 'X-XSRFToken': SimpleCookie(Cookie)['_xsrf'].value}
-
-    kernel_id = None
-    with KernelClient(server_url=server_url, token=None, headers=headers) as kernel:
+    with KernelClient(server_url=SERVER_URL, token=None, headers=HEADERS) as kernel:
         pprint(kernel.list_kernels())
-        kernel_id = kernel.list_kernels()[0]['id']
 
-    with KernelClient(server_url=server_url, token=None, headers=headers, kernel_id=kernel_id) as kernel:
         code = """
 df = get_fundamentals(query(
         valuation.code, valuation.market_cap, valuation.pe_ratio, income.total_operating_revenue

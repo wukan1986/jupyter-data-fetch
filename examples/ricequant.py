@@ -1,29 +1,36 @@
+import re
 from http.cookies import SimpleCookie
 from pprint import pprint
 
 from jupyter_kernel_client import KernelClient
 
-from jupyter_data_fetch.codec import JupyterTextCodec, JupyterImageCodec
+from jupyter_data_fetch.codec import JupyterTextCodec, JupyterImageCodec, extract_from_reply
 
-Cookie = 'jupyterhub-user-user_123456=2|1:0|10:1782310843|27:jupyterhub-user-user_123456|40:bUZzWVBSeDcxdXFmRjFtdUI3dDFsSTA5ZVE1ZEVO|856cf571f52f5753f99cb96ff164375215cb432f820d1cf36deba0a341cac167; tgw_l7_route=006b76bf4a6398f05baf657858ca2891; jupyter-hub-token=; sid=apG2XqdJttarfl255exP8hevHMjPTVSS|3b2370a8c4f723d6e2280d640cfff0e85f882fd17a66b842a8c358cab3cc61395f4932f854c93a9d093c6b7b13554385ec8e6e603dd51fa443a17ca4c64b8b8a; jupyterhub-session-id=0e48f1a1974a45f08e99ad50ba84fd06; jupyterhub-hub-login="2|1:0|10:1782310842|20:jupyterhub-hub-login|44:NjdhMzIxMTk3ODI3NGMyYzgyN2FiYjA3YTcwNTI2NWY=|cc6c11d238bd028fd336fb567c3d16921431cc365cfa74123a22047f7e59b21e"; _xsrf=2|a1261e8f|51fe49f9992506a09880bb28853f3b28|1782310843; Hm_lvt_cb81fd54150b99e25d085d58bbaf4a07=1782310842; HMACCOUNT=54C5A216213487CB; Hm_lpvt_cb81fd54150b99e25d085d58bbaf4a07=1782310859'
+COOKIE = 'jupyterhub-user-user_123456=2|1:0|10:1782907352|27:jupyterhub-user-user_123456|40:N1JqSjhYSmRuSkJPa3M0MHc4SXIzcEszbVQ3aWUx|a409e6e517378f4b8347ed356b64a35cf012cdb1fb64aa63896975bd298ebf9c; tgw_l7_route=3596f940fbcd94bd2bec34c51be04477; jupyter-hub-token=; sid=nNhHlJmIPZknb6A1WGJfcdiIkHVQfyIN|2410a5a736e615894ca18cec519f605dc6d4c5fb28e79925d05c332b541061a9f3812adce1d0ec0e1721888c05fcc13a828f907e31cd57bdcb1f75dae4cf7e30; jupyterhub-session-id=77d3aa9f793c421fb7e80c9db3067476; jupyterhub-hub-login="2|1:0|10:1782907352|20:jupyterhub-hub-login|44:NjdhMzIxMTk3ODI3NGMyYzgyN2FiYjA3YTcwNTI2NWY=|180f723e8e52e79e471f5addb1ba8c2e1faf278532d9d6ea3878057734f083f7"; _xsrf=2|b6ad5052|c49eba51ef6ae3ecfab93c97c122e2a8|1782907352; Hm_lvt_cb81fd54150b99e25d085d58bbaf4a07=1782907354; HMACCOUNT=FD9E0D86AB8815CB; Hm_lpvt_cb81fd54150b99e25d085d58bbaf4a07=1782907380'
+HEADERS = {'Cookie': COOKIE, 'X-XSRFToken': SimpleCookie(COOKIE)['_xsrf'].value}
+UID = re.search(r'user_\d+', COOKIE).group(0)
+SERVER_URL = f"https://www.ricequant.com/research/user/{UID}"
+NAME = "python3.9"  # 使用python3.9，不要使用python 3.6
+PATH = "/home/rice/notebook"
 
-headers = {'Cookie': Cookie, 'X-XSRFToken': SimpleCookie(Cookie)['_xsrf'].value}
+kernel = KernelClient(server_url=SERVER_URL, token=None, headers=HEADERS)
+kernel.start(name=NAME, path=PATH) # path没有生效，得道
+pprint(kernel.list_kernels())
 
-with KernelClient(server_url="https://www.ricequant.com/research/user/user_123456", token=None, headers=headers) as kernel:
-    pprint(kernel.list_kernels())
-    # 使用python3.9，不要使用python 3.6
-    kernel_id = kernel.list_kernels()[0]['id']
+reply = kernel.execute("""!pwd""")
+print(extract_from_reply(reply))  # 注意：未指定kernels时，当前目录是/tmp
 
-with KernelClient(server_url="https://www.ricequant.com/research/user/user_123456", token=None, headers=headers, kernel_id=kernel_id) as kernel:
-    code = """
+code = """
 df = get_industry('621020', source='citics_2019', date=None, market='cn')
 """
-    reply = kernel.execute(JupyterTextCodec.generate_code(code), store_history=False)
-    # print(reply)
-    obj = JupyterTextCodec.extract_decode(reply)
-    print(obj)
+reply = kernel.execute(JupyterTextCodec.generate_code(code), store_history=False)
+# print(reply)
+obj = JupyterTextCodec.extract_decode(reply)
+print(obj)
 
-    reply = kernel.execute(JupyterImageCodec.generate_code(), store_history=False)
-    # print(reply)
-    obj = JupyterImageCodec.extract_decode(reply)
-    print(obj)
+reply = kernel.execute(JupyterImageCodec.generate_code(), store_history=False)
+# print(reply)
+obj = JupyterImageCodec.extract_decode(reply)
+print(obj)
+
+kernel.stop()

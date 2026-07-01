@@ -9,12 +9,13 @@
 
 """
 import asyncio
+import msgpack
 
 from playwright_helper import AsyncBrowser, get_chrome_path, kill_browsers  # noqa
 
 
 async def main():
-    kill_browsers("chrome.exe")
+    # kill_browsers("chrome.exe")
     # kill_browsers("msedge.exe")
 
     async with AsyncBrowser(endpoint="http://127.0.0.1:9222", executable_path=get_chrome_path(), devtools=False, user_data_dir="D:\\user_data") as browser:
@@ -31,6 +32,7 @@ async def main():
                 if message[0] == 0x01:
                     # 将页面消息转发给真实服务器
                     if b'Hello World' in message:
+                        print(msgpack.unpackb(message))
                         print(f"[PAGE -> SERVER]: {message}")
                 server_ws.send(message)
 
@@ -47,7 +49,7 @@ async def main():
 
         # 拦截匹配 URL 的 WebSocket 连接
         await page.route_web_socket("**?reconnectionToken=*&reconnection=false*", ws_handler)
-        await page.goto("https://bigquant.com/aistudio/studios/48ec8c2c-0f37-55ed-93bb-da75731aa77c/?folder=/home/aiuser/work")
+        await page.goto("https://bigquant.com/aistudio/studios/48ec8c2c-0f37-11ed-93bb-da75731aa77c/?folder=/home/aiuser/work")
         await asyncio.sleep(1000)
         await browser.close()
 
