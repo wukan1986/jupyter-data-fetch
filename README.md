@@ -60,7 +60,7 @@ df = get_fundamentals(query(
 
 ## 自动登录并获取数据的完整示例
 
-参考[examples/playwright/joinquant.py](examples/playwright/joinquant.py)
+参考[examples/cookie_playwright.py](examples/playwright/cookie_playwright.py)
 
 ## 核心代码
 
